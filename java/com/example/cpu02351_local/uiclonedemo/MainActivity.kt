@@ -12,7 +12,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private val FRAGMENT_NEWS = "News Fragment"
     private val FRAGMENT_VIDEO = "Video Fragment"
 
-    private val pages = ArrayList<Page>()
+    private val pages = HashMap<@android.support.annotation.IdRes Int, Page>()
+    private val tags = HashMap<@android.support.annotation.IdRes Int, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,30 +23,25 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun initPages() {
-        pages.add(NewsPage.instance())
-        pages.add(VideoPage.instance())
+        pages[R.id.navigation_news] = NewsPage.instance()
+        pages[R.id.navigation_video] = VideoPage.instance()
+        tags[R.id.navigation_news] = FRAGMENT_NEWS
+        tags[R.id.navigation_video] = FRAGMENT_VIDEO
     }
 
     private fun initBottomNav() {
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, pages[0], FRAGMENT_NEWS)
+                .add(R.id.fragment_container, pages[R.id.navigation_news], FRAGMENT_NEWS)
                 .commit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.navigation_news -> {
-                replaceFragment(pages[0], FRAGMENT_NEWS)
-                true
-            }
-            R.id.navigation_video -> {
-                replaceFragment(pages[1], FRAGMENT_VIDEO)
-                true
-            }
-            else -> false
-        }
+        val itemId = item.itemId
+        if (!pages.containsKey(itemId)) return false
+        replaceFragment(pages[itemId]!!, tags[itemId])
+        return true
     }
 
 
