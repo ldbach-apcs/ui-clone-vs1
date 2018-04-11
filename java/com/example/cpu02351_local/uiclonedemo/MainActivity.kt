@@ -17,29 +17,31 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        initPages()
+        initPages()
         initBottomNav()
     }
 
     private fun initPages() {
-        pages.add(NewsPage())
-        pages.add(NewsPage())
+        pages.add(NewsPage.instance())
+        pages.add(VideoPage.instance())
     }
 
     private fun initBottomNav() {
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnNavigationItemSelectedListener(this)
-        replaceFragment(pages[0], null)
+        supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container, pages[0], FRAGMENT_NEWS)
+                .commit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.navigation_news -> {
-                replaceFragment(NewsPage.instance(), FRAGMENT_NEWS)
+                replaceFragment(pages[0], FRAGMENT_NEWS)
                 true
             }
             R.id.navigation_video -> {
-                replaceFragment(VideoPage.instance(), FRAGMENT_VIDEO)
+                replaceFragment(pages[1], FRAGMENT_VIDEO)
                 true
             }
             else -> false
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun replaceFragment(newFragment: Page, tag: String?) {
         supportFragmentManager.beginTransaction()
-        .replace(R.id.fragment_container, newFragment, tag)
-        .commit()
+            .replace(R.id.fragment_container, newFragment, tag)
+            .commit()
     }
 }

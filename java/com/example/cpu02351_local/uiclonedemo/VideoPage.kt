@@ -2,15 +2,31 @@ package com.example.cpu02351_local.uiclonedemo
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class VideoPage : Page(),  TabLayout.OnTabSelectedListener {
+class VideoPage : Page(), TabLayout.OnTabSelectedListener {
+    override fun initPager() {
+
+        adapter = TabAdapter(childFragmentManager)
+        pager.adapter = adapter
+        tabLayout.addOnTabSelectedListener(this)
+        pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+    }
+
+    override fun initTabs() {
+        // Load tab
+        for (i in 0 until 4) {
+            tabLayout.addTab(tabLayout.newTab().setText("Video Tabs $i"))
+        }
+    }
+
+    private lateinit var adapter: TabAdapter
+
     companion object {
         @JvmStatic
-        fun instance() : VideoPage {
+        fun instance(): VideoPage {
             val newPage = VideoPage()
             return newPage
         }
@@ -22,19 +38,6 @@ class VideoPage : Page(),  TabLayout.OnTabSelectedListener {
         pager = rootView.findViewById(R.id.pager)
         init()
         return rootView
-    }
-
-    override fun init() {
-        // Load tab
-        for (i in 0 until 10) {
-            tabLayout.addTab(tabLayout.newTab().setText("Video Tabs $i"))
-        }
-        val adapter = TabAdapter(childFragmentManager, tabLayout.tabCount)
-        pager.adapter = adapter
-        tabLayout.addOnTabSelectedListener(this)
-
-        pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
-        pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
     }
 
     override fun onResume() {

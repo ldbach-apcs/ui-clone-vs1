@@ -6,10 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class NewsPage : Page(),  TabLayout.OnTabSelectedListener {
+class NewsPage : Page(), TabLayout.OnTabSelectedListener {
+    override fun initPager() {
+        adapter = NewsTabAdapter(childFragmentManager)
+        pager.adapter = adapter
+        tabLayout.addOnTabSelectedListener(this)
+        pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+    }
+
+    override fun initTabs() {
+        for (i in 0 until 2) {
+            tabLayout.addTab(tabLayout.newTab().setText("List Tab: $i"))
+        }
+    }
+
+    private var adapter: TabAdapter? = null
+
     companion object {
         @JvmStatic
-        fun instance() : NewsPage {
+        fun instance(): NewsPage {
             val newPage = NewsPage()
             return newPage
         }
@@ -19,24 +34,10 @@ class NewsPage : Page(),  TabLayout.OnTabSelectedListener {
         val rootView = inflater.inflate(R.layout.fragment_page, container, false)
         tabLayout = rootView!!.findViewById(R.id.tabLayout)
         pager = rootView.findViewById(R.id.pager)
+        init()
         return rootView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        init()
-    }
-
-    override fun init() {
-        // Load tab
-        for (i in 0 until 10) {
-            tabLayout.addTab(tabLayout.newTab().setText("News Tabs $i"))
-        }
-        val adapter = TabAdapter(childFragmentManager, tabLayout.tabCount)
-        pager.adapter = adapter
-        tabLayout.addOnTabSelectedListener(this)
-        pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
-    }
 
     override fun onResume() {
         super.onResume()
@@ -44,6 +45,7 @@ class NewsPage : Page(),  TabLayout.OnTabSelectedListener {
     }
 
     override fun onDestroyView() {
+        adapter = null
         pager.adapter = null
         tabLayout.clearOnTabSelectedListeners()
         pager.clearOnPageChangeListeners()

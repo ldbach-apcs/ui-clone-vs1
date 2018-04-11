@@ -11,15 +11,21 @@ abstract class Page : Fragment() {
     protected var currentIndx = 0
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("current", pager.currentItem)
         super.onSaveInstanceState(outState)
+        outState.putInt("current", pager.currentItem)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         currentIndx = savedInstanceState?.getInt("current") ?: 0
     }
 
-    abstract fun init()
+    fun init() {
+        initTabs()
+        initPager()
+    }
+
+    abstract fun initPager()
+
+    abstract fun initTabs()
 }

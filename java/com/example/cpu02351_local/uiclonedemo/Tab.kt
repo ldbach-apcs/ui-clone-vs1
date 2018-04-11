@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class Tab : Fragment() {
+open class Tab : Fragment() {
     private lateinit var tabText: TextView
     private var index = -1
 
